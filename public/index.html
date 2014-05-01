@@ -1,0 +1,150 @@
+<!doctype html>
+
+<!-- ASSIGN OUR ANGULAR MODULE -->
+<html ng-app="expdemAnalytics">
+<head>
+	<!-- META -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+
+	<title>Expdem's Tweet Analysis'</title>
+
+	<!-- SCROLLS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css">
+	<style>
+		html 					{ overflow-y:scroll; }
+		body 					{ padding-top:50px; }
+        .span3 {
+            height: 200px !important;
+            overflow: scroll;
+        }
+	</style>
+
+	<!-- SPELLS -->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+
+	<script src="js/controllers/main.js"></script> <!-- load up our controller -->
+    <script src="js/services/users.js"></script> <!-- load our users service -->
+    <script src="js/services/tweets.js"></script> <!-- load our teets service -->
+    <script src="js/services/words.js"></script> <!-- load our teets service -->
+	<script src="js/core.js"></script> <!-- load our main application -->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="js/charts/wordcloud2.js"></script>
+    
+</head>
+<!-- SET THE CONTROLLER -->
+<body ng-controller="mainController">
+	<div class="container">
+
+		<!-- HEADER AND CURRENT TWITTERS COUNT -->
+		<div class="jumbotron text-center">
+			<h2>Twiteando Diversidad Funcional <span class="label label-info">0<!--TODO: change it for online data --></span></h2>
+		</div>
+        <!-- General DATA -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Información General</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-sm-4">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td style="vertical-align:middle;">Total Usuarios <span class="badge alert-info">{{totalusers}}</span></td>
+                            
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:middle;">Total Tweets <span class="badge alert-info">{{totaltweets}}</span></td>
+                            <td style="vertical-align:middle;">Geolocalizados <span class="badge alert-info">{{ numgeo / totaltweets * 100 | number:2}}%</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+       
+        <!-- CHART DATA -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Actividad Usuarios</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="navbar-form navbar-left" role="search">
+                            <div class="form-group">
+                                <label>Top Tweeteros</label>
+                                <input id="max-tweeters" type="text" class="form-control" ng-model="maxTweeters"  size="1" placeholder="10">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-9" id="max-twitters-chart" width="800" height="400"></div>
+                    {{changeMaxTwitters()}}
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="navbar-form navbar-left" role="search">
+                            <div class="form-group">
+                                <label>Nube de Palabras</label>
+                                <input id="max-words" type="text" class="form-control" ng-model="maxWords"  size="1" placeholder="50">
+                                    </div>
+                        </div>
+                    </div>
+                    <canvas id="word-cloud-chart" width="800" height="400"></canvas>
+                    {{changeMaxWords()}}
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-9" id="community"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div class="panel-heading"><label>Ranking Tweeteros</label>
+                        </div>
+                        
+                        <!-- Table -->
+                        <table class="table">
+                            <th>Usuario</th>
+                            <th>Núm.Tweets</th>
+                            <tr ng-repeat="t in tweetsperuser">
+                                <td>{{t._id}}</td>
+                                <td>{{t.count}}</td>
+                            <tr>
+                        </table>
+                    </div>
+                    <div class="col-sm-5">
+                            <div class="panel-heading">
+                                <form class="navbar-form navbar-left" ng-submit="getTweetsByUser()">
+                                    <div class="input-group">
+                                        <input type="text" ng-model="currentuser" placeholder="nombre de usuario" class="form-control">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" type="submit">Buscar Tweets</button>
+                                            </span>
+                                    </div>
+                                </form>
+                            </div>
+                            <table ng-if="currenttweets" class="table">
+                                <tr ng-repeat="t in currenttweets">
+                                    <td>{{t.text}}</td>
+                                    <tr>
+                            </table>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+        
+
+		<div class="text-center text-muted">
+			<p>A demo by <a href="http://guiem.info">guiem</a>.</p>
+		</div>
+
+	</div>
+
+</body>
+</html>
+<script src="js/charts/chart.js"></script>
+<script src="js/charts/graph.js"></script>
+

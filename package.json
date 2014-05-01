@@ -1,0 +1,11 @@
+{
+  "name"         : "expdem-analytics",
+  "version"      : "0.0.0",
+  "description"  : "analytics for expdem's project",
+  "main"         : "server.js",
+  "author"       : "guiem",
+  "dependencies" : {
+    "express"    : "~3.4.4",
+    "mongoose"   : "~3.6.2"
+  }
+}
