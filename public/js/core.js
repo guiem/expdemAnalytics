@@ -1,1 +1,1 @@
-angular.module('expdemAnalytics', ['userService','tweetService','wordService','expdemController']);
+angular.module('expdemAnalytics', ['userService','tweetService','wordService','expdemController','hashtagService']);

@@ -1,6 +1,6 @@
 angular.module('expdemController', [])
 
-	.controller('mainController', function($scope, $http, Users, Tweets, Words) {
+	.controller('mainController', function($scope, $http, Users, Tweets, Words, HashTags) {
                 
         Tweets.getTweetsPerUser()
             .success(function(data){
@@ -10,6 +10,11 @@ angular.module('expdemController', [])
         Words.getNGrams()
         .success(function(data){
             $scope.ngrams = data;
+        });
+                
+        HashTags.getNHashtags()
+        .success(function(data){
+            $scope.nhashtags = data;
         });
                 
         Users.getTotalUsers()
@@ -63,23 +68,44 @@ angular.module('expdemController', [])
             WordCloud(document.getElementById('word-cloud-chart'), { list: wordsData } );
         }
                 
-        $scope.changeMaxWords = function() {
-            if (!$scope.maxWords)
+                $scope.changeMaxWords = function() {
+                if (!$scope.maxWords)
                 changeMaxWordsChart(50);
-            else
+                else
                 changeMaxWordsChart($scope.maxWords);
+                };
+                
+        $scope.changeMaxHashTags = function() {
+            if (!$scope.maxHashTags)
+                changeMaxHashTagsChart(50);
+            else
+                changeMaxHashTagsChart($scope.maxHashTags);
         };
+                
+        function changeMaxHashTagsChart(numWords){
+                var wordsData = [];
+                var usersBlackList = [];
+                angular.forEach($scope.usernames, function(res) {
+                                usersBlackList.push(res.screen_name);
+                                });
+                var count = 0;
+                var maxCount = 0;
+                angular.forEach($scope.nhashtags, function(res) {
+                                count += 1;
+                                if (count > numWords){
+                                return;
+                                }
+                                maxCount = Math.max(maxCount,res.count);
+                                var isUser = usersBlackList.indexOf(res.word);
+                                if(isUser == -1)
+                                wordsData.push([res.hashtag, res.count*100/maxCount]);
+                                });
+                WordCloud(document.getElementById('word-cloud-chart-hashtags'), { list: wordsData } );
+                }
+
                 
 		$scope.formData = {};
 		$scope.loading = true;
-
-
-		/*Todos.get()
-			.success(function(data) {
-				$scope.todos = data;
-				$scope.loading = false;
-			});
-         */
         
 
         Tweets.getTotalTweets()
@@ -87,6 +113,12 @@ angular.module('expdemController', [])
                  $scope.totaltweets = data;
                  $scope.loading = false;
                  });
+        
+        Tweets.getTotalRTweets()
+        .success(function(data) {
+            $scope.totalrtweets = data;
+            $scope.loading = false;
+        });
         
         Tweets.getNumGeo()
         .success(function(data) {

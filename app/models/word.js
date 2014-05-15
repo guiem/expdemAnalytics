@@ -5,4 +5,4 @@ var Word = new Schema({
 
                                  });
 
-module.exports = mongoose.model('Word', Word,'words');
+module.exports = mongoose.model('Word', Word,'words_df');

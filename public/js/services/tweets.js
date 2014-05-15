@@ -7,6 +7,9 @@ angular.module('tweetService', [])
 			getTotalTweets : function() {
 				return $http.get('/api/totaltweets');
 			},
+            getTotalRTweets : function() {
+                return $http.get('/api/totalrtweets');
+            },
             getTweetsPerUser : function() {
                 return $http.get('/api/tweetsperuser');
             },

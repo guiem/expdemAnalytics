@@ -1,62 +1,9 @@
 var TwitterUser = require('./models/twitterUser');
 var Tweet = require('./models/tweet');
 var Word = require('./models/word');
+var HashTag = require('./models/hashtag');
 
 module.exports = function(app) {
-
-	// api ---------------------------------------------------------------------
-	// get all todos
-	/*app.get('/api/todos', function(req, res) {
-
-		// use mongoose to get all todos in the database
-		Todo.find(function(err, todos) {
-
-			// if there is an error retrieving, send the error. nothing after res.send(err) will execute
-			if (err)
-				res.send(err)
-
-			res.json(todos); // return all todos in JSON format
-		});
-	});*/
-
-	/*// create todo and send back all todos after creation
-	app.post('/api/todos', function(req, res) {
-
-		// create a todo, information comes from AJAX request from Angular
-		Todo.create({
-			text : req.body.text,
-			done : false
-		}, function(err, todo) {
-			if (err)
-				res.send(err);
-
-			// get and return all the todos after you create another
-			Todo.find(function(err, todos) {
-				if (err)
-					res.send(err)
-				res.json(todos);
-			});
-		});
-
-	});*/
-
-    /*
-	// delete a todo
-	app.delete('/api/todos/:todo_id', function(req, res) {
-		Todo.remove({
-			_id : req.params.todo_id
-		}, function(err, todo) {
-			if (err)
-				res.send(err);
-
-			// get and return all the todos after you create another
-			Todo.find(function(err, todos) {
-				if (err)
-					res.send(err)
-				res.json(todos);
-			});
-		});
-	});*/
 	
 	// get all users
 	app.get('/api/users', function(req, res) {
@@ -116,6 +63,16 @@ module.exports = function(app) {
         });
     });
     
+    // get number of tweets
+	app.get('/api/totalrtweets', function(req, res) {
+        Tweet.find({"retweeted": true}).count(function(err, count) {
+            if (err)
+                res.send(err)
+                               
+            res.json(count);
+        });
+    });
+    
     // get num tweets per user
 	app.get('/api/tweetsperuser', function(req, res) {
             
@@ -158,6 +115,21 @@ module.exports = function(app) {
                   res.json(word);
             });
     });
+    
+    // get count words
+	app.get('/api/nhashtags', function(req, res) {
+            var blackList = ["#diversidadfuncional"];
+            // db.words.find({word:{$nin:blackList}}).sort( { count: -1 } )
+            HashTag
+            .find({hashtag:{$nin:blackList}})
+            //.limit(1000)
+            .sort('-count')
+            .exec(function(err,hashtag){
+                  if (err)
+                  res.send(err);
+                  res.json(hashtag);
+                  });
+            });
     
     // delete a todo
 	app.get('/api/usertweets/:screen_name', function(req, res) {

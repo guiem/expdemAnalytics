@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var Tweet = new Schema({
+var HashTag = new Schema({
 
                                  });
 
-module.exports = mongoose.model('Tweet', Tweet,'tweets_df');
+module.exports = mongoose.model('HashTag', HashTag,'hashtags_df');
