@@ -10,8 +10,9 @@
 	<title>Expdem's Tweet Analysis</title>
 
 	<!-- SCROLLS -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+	<!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">--><!-- load bootstrap -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
 	<style>
 		html 					{ overflow-y:scroll; }
@@ -23,17 +24,20 @@
 	</style>
 
 	<!-- SPELLS -->
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
-
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+    <script src="http://code.angularjs.org/1.2.16/i18n/angular-locale_es-es.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<script src="js/controllers/main.js"></script> <!-- load up our controller -->
     <script src="js/services/users.js"></script> <!-- load our users service -->
     <script src="js/services/tweets.js"></script> <!-- load our teets service -->
     <script src="js/services/words.js"></script> <!-- load our teets service -->
     <script src="js/services/hashtags.js"></script> <!-- load our teets service -->
+    <script src="js/charts/tweetsperday.js"></script>
 	<script src="js/core.js"></script> <!-- load our main application -->
+    <script src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="js/charts/wordcloud2.js"></script>
-    
+        
 </head>
 <!-- SET THE CONTROLLER -->
 <body ng-controller="mainController">
@@ -71,6 +75,50 @@
                 <h3 class="panel-title">Actividad Usuarios</h3>
             </div>
             <div class="panel-body">
+                
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="navbar-form navbar-left" role="search">
+                            <div class="form-group">
+                                <label>Tweets en el tiempo</label>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        Desde
+                                    </div>
+                                    <div class="col-md-2">
+                                        Hasta
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <p class="input-group">
+                                        <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dtStart" is-open="datepickers.dt_start" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Cerrar"/>
+                                        <span class="input-group-btn">
+                                            <button id='start-date-btn' type="button" class="btn btn-default" ng-click="open($event,'dt_start')"><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <p class="input-group">
+                                        <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dtEnd" is-open="datepickers.dt_end" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Cerrar"/>
+                                        <span class="input-group-btn">
+                                            <button id='end-date-btn' type="button" class="btn btn-default" ng-click="open($event,'dt_end')"><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-default" ng-click="getTweetsPerDay()">Generar gráfico</button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="tweets-per-day-chart"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <hr>
                 <div class="row">
                     <div class="col-sm-2">
                         <div class="navbar-form navbar-left" role="search">

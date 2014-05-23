@@ -18,3 +18,5 @@ polyline{
     stroke: #999;
     stroke-opacity: .6;
 }
+
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }

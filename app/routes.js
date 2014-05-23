@@ -101,6 +101,32 @@ module.exports = function(app) {
         });
     });
     
+    // get date of first collected tweet
+	app.get('/api/tweetmindate', function(req, res) {
+        Tweet
+        .find({},{created_at:1,created_at_dt:1})
+        .limit(1)
+        .sort('created_at_dt')
+        .exec(function(err,date) {
+            if (err)
+                res.send(err)
+            res.json(date);
+        });
+    });
+    
+    // get date of last collected tweet
+	app.get('/api/tweetmaxdate', function(req, res) {
+    Tweet
+    .find({},{created_at:1,created_at_dt:1})
+    .limit(1)
+    .sort('-created_at_dt')
+    .exec(function(err,date) {
+        if (err)
+            res.send(err)
+        res.json(date);
+        });
+    });
+    
     // get count words
 	app.get('/api/ngrams', function(req, res) {
             var blackList = [":","@","#","http","el","la",",","de","en","y","los","''","a","``",".","sobre","por","...","con","para","rt","las","!","no","que","una","un","l","|","san","s","tel","es","se","al","su","-","scoopit","?","del","d","amb","i","te","lo","e","24","per","https",")","(","o","diversidad","funcional","diversidadfuncional","funcional."];
@@ -131,16 +157,48 @@ module.exports = function(app) {
                   });
             });
     
-    // delete a todo
+    // get tweets by screen_name
 	app.get('/api/usertweets/:screen_name', function(req, res) {
-               Tweet.find({
-                           "user.screen_name" : req.params.screen_name
-                           }, function(err, tweets) {
-                           if (err)
-                                res.send(err);
-                            res.json(tweets);
-                        });
-               });
+        Tweet.find({"user.screen_name" : req.params.screen_name}, function(err, tweets) {
+            if (err)
+                res.send(err);
+            res.json(tweets);
+        });
+    });
+    
+    // get tweets between dates
+	app.get('/api/tweetsintimegap/:start_date/:end_date', function(req, res) {
+        var dateStartAux = req.params.start_date.split("-");
+        var dateStart = new Date(dateStartAux[0],(parseInt(dateStartAux[1])-1).toString(),dateStartAux[2],'00','00','00');
+        var dateEndAux = req.params.end_date.split("-");
+        var dateEnd = new Date(dateEndAux[0],(parseInt(dateEndAux[1])-1).toString(),dateEndAux[2],'23','59','59');
+        Tweet.find({"created_at_dt" :{$gte : dateStart, $lte : dateEnd } })
+        .select('created_at_dt')
+        .exec(function(err, tweets) {
+            if (err)
+                res.send(err);
+            res.json(tweets);
+        });
+    });
+    
+    // get num tweets per day between dates
+	app.get('/api/tweetsperday/:start_date/:end_date', function(req, res) {
+        var dateStartAux = req.params.start_date.split("-");
+        var dateStart = new Date(Date.UTC(dateStartAux[0],(parseInt(dateStartAux[1])-1).toString(),dateStartAux[2],'00','00','00'));
+        var dateEndAux = req.params.end_date.split("-");
+        var dateEnd = new Date(Date.UTC(dateEndAux[0],(parseInt(dateEndAux[1])-1).toString(),dateEndAux[2],'23','59','59'));
+        Tweet//.find({"created_at_dt" :{$gte : dateStart, $lte : dateEnd } })
+        .aggregate(
+            { $match : {"created_at_dt" :{$gt : dateStart, $lte : dateEnd } } },
+            { $group : {
+                _id : { year: { $year : "$created_at_dt" }, month: { $month : "$created_at_dt" },day: { $dayOfMonth : "$created_at_dt" }},
+                count : { $sum : 1 }}
+            },function(err, tweets) {
+            if (err)
+                res.send(err);
+            res.json(tweets);
+        });
+    });
 
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {

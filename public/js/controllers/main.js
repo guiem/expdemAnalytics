@@ -1,6 +1,52 @@
-angular.module('expdemController', [])
+angular.module('expdemController', ['ui.bootstrap'])
 
-	.controller('mainController', function($scope, $http, Users, Tweets, Words, HashTags) {
+	.controller('mainController', function($scope, $filter, $http, Users, Tweets, Words, HashTags) {
+                
+        Tweets.getMinDate()
+        .success(function(data) {
+            $scope.dtStart = new Date(data[0].created_at_dt);
+        });
+            
+        Tweets.getMaxDate()
+        .success(function(data) {
+            $scope.dtEnd = new Date(data[0].created_at_dt);
+        });
+                
+        $scope.datepickers = {
+            dtStart: $scope.dtStart,
+            dtEnd: $scope.dtEnd,
+        }
+                
+        $scope.clear = function () {
+            $scope.dtStart = null;
+            $scope.dtEnd= null;
+        };
+                
+        // Disable weekend selection
+        $scope.disabled = function(date, mode) {
+            return false;
+            //return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+        };
+                
+        $scope.toggleMin = function() {
+            $scope.minDate = null // $scope.minDate ? null : new Date();
+        };
+        $scope.toggleMin();
+                
+        $scope.open = function($event, which) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.datepickers[which]= true;
+        };
+                
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            startingDay: 1,
+            showWeeks: false,
+        };
+                
+        $scope.formats = ['dd/MM/yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+        $scope.format = $scope.formats[0];
                 
         Tweets.getTweetsPerUser()
             .success(function(data){
@@ -127,48 +173,53 @@ angular.module('expdemController', [])
         });
         
         $scope.getTweetsByUser = function() {
-                
-                Tweets.getByUser($scope.currentuser)
-				// if successful creation, call our get function to get all the new todos
-                    .success(function(data) {
-                        $scope.currenttweets = data; // assign our new list of todos
-                });
+            Tweets.getByUser($scope.currentuser)
+            .success(function(data) {
+                $scope.currenttweets = data;
+            });
         };
-                              
-                                
-        /*
-		// CREATE ==================================================================
-		// when submitting the add form, send the text to the node API
-		$scope.createTodo = function() {
-			$scope.loading = true;
-
-			// validate the formData to make sure that something is there
-			// if form is empty, nothing will happen
-			if ($scope.formData.text != undefined) {
-
-				// call the create function from our service (returns a promise object)
-				Todos.create($scope.formData)
-
-					// if successful creation, call our get function to get all the new todos
-					.success(function(data) {
-						$scope.loading = false;
-						$scope.formData = {}; // clear the form so our user is ready to enter another
-						$scope.todos = data; // assign our new list of todos
-					});
-			}
-		};
-
-		// DELETE ==================================================================
-		// delete a todo after checking it
-		$scope.deleteTodo = function(id) {
-			$scope.loading = true;
-
-			Todos.delete(id)
-				// if successful creation, call our get function to get all the new todos
-				.success(function(data) {
-					$scope.loading = false;
-					$scope.todos = data; // assign our new list of todos
-				});
-		};
-        */
-	});
+                
+        $scope.getTweetsInGap = function() {
+            Tweets.getInGap($filter('date')($scope.dtStart,'yyyy-MM-dd'),$filter('date')($scope.dtEnd,'yyyy-MM-dd'))
+            .success(function(data) {
+                //$scope.currenttweets = data;
+            });
+        };
+        
+        function drawTweetsPerDay(){
+            var dayList = [['Día','Núm.Tweets']];
+            var currDate = $scope.dtStart;
+            if (currDate < $scope.dtEnd) {
+                while (currDate <= $scope.dtEnd) {
+                    dayList.push([currDate.getDate()+'/'+((parseInt(currDate.getMonth())+1).toString()+'/'+currDate.getFullYear()),0]);
+                    currDate = new Date(currDate.setDate(currDate.getDate() + 1));
+                }
+            }
+            angular.forEach($scope.tweetsperday, function(res) {
+                var i = 0;
+                while (i < dayList.length) {
+                    if (""+res._id.day+'/'+res._id.month+'/'+res._id.year+"" === dayList[i][0]) {
+                        dayList[i][1] = res.count;
+                        break;
+                    }
+                    i += 1;
+                }
+            });
+            drawTweetsPerDayChart(dayList);
+        }
+                
+        $scope.getTweetsPerDay = function() {
+            var ini = $filter('date')($scope.dtStart,'yyyy-MM-dd');
+            var end = $filter('date')($scope.dtEnd,'yyyy-MM-dd');
+            console.log('ini '+ini);
+            console.log('end '+end);
+            Tweets.getPerDay(ini,end)
+            .success(function(data) {
+                $scope.tweetsperday = data;
+                drawTweetsPerDay();
+            });
+        };
+        
+        // first default call to show tweets per day
+        //$scope.getTweetsPerDay();
+});

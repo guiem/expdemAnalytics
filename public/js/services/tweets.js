@@ -18,6 +18,21 @@ angular.module('tweetService', [])
             },
             getByUser: function(screen_name) {
                 return $http.get('/api/usertweets/' + screen_name);
-            }
+            },
+            getMinDate: function() {
+                return $http.get('/api/tweetmindate/');
+            },
+            getMaxDate: function() {
+                return $http.get('/api/tweetmaxdate/');
+            },
+            getInGap: function(start,end) {
+                return $http.get('/api/tweetsintimegap/' + start + '/' + end);
+            },
+            getPerDay: function(start,end) {
+                return $http.get('/api/tweetsperday/' + start + '/' + end)
+            },
 		}
 	});
+
+
+
