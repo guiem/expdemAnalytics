@@ -180,9 +180,12 @@ angular.module('expdemController', ['ui.bootstrap'])
         };
                 
         $scope.getTweetsInGap = function() {
+            if(!$scope.checkTweetsGap){
+                return;
+            }
             Tweets.getInGap($filter('date')($scope.dtStart,'yyyy-MM-dd'),$filter('date')($scope.dtEnd,'yyyy-MM-dd'))
             .success(function(data) {
-                //$scope.currenttweets = data;
+                $scope.tweetsingap = data;
             });
         };
         

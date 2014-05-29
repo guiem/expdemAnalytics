@@ -109,9 +109,33 @@
                                     <div class="col-md-2">
                                         <button class="btn btn-default" ng-click="getTweetsPerDay()">Generar gráfico</button>
                                     </div>
+                                    <div class="col-md-3">
+                                        Mostrar Tweets en rango
+                                        <input id='box' ng-model='checkTweetsGap'  ng-change='getTweetsInGap()' type = 'checkbox' />
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div id="tweets-per-day-chart"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-10" ng-if="checkTweetsGap">
+                                        <div class="panel-heading"><label>Tweets en Rango Fechas</label>
+                                        </div>
+                                        
+                                        <!-- Table -->
+                                        <table class="table">
+                                            <th>Usuario</th>
+                                            <th>Tweet</th>
+                                            <th>Fecha</th>
+                                            <tr ng-repeat="t in tweetsingap">
+                                                <td>{{t.user.screen_name}}</td>
+                                                <td>{{t.text}}</td>
+                                                <td>{{t.created_at_dt}}</td>
+                                                <tr>
+                                            </table>
+                                    </div>
+                                </div>
+
                                 </div>
                             </div>
                         </div>

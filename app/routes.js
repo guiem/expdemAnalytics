@@ -173,7 +173,7 @@ module.exports = function(app) {
         var dateEndAux = req.params.end_date.split("-");
         var dateEnd = new Date(dateEndAux[0],(parseInt(dateEndAux[1])-1).toString(),dateEndAux[2],'23','59','59');
         Tweet.find({"created_at_dt" :{$gte : dateStart, $lte : dateEnd } })
-        .select('created_at_dt')
+        .select('created_at_dt text user.screen_name')
         .exec(function(err, tweets) {
             if (err)
                 res.send(err);
