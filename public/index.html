@@ -24,6 +24,7 @@
 	</style>
 
 	<!-- SPELLS -->
+    
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
     <script src="http://code.angularjs.org/1.2.16/i18n/angular-locale_es-es.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -37,12 +38,21 @@
     <script src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="js/charts/wordcloud2.js"></script>
-        
+    
+    <!--<script data-require="angular-ui-bootstrap@0.3.0" data-semver="0.3.0" src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.3.0.min.js"></script>-->
+
+
 </head>
 <!-- SET THE CONTROLLER -->
 <body ng-controller="mainController">
 	<div class="container">
 
+        <!--
+         <ul class="nav nav-pills">
+            <li class="active"><a href="#">Diversidad Funcional</a></li>
+            <li><a href="http://localhost:8081">VI - Europeas 2014</a></li>
+        </ul>
+         -->
 		<!-- HEADER AND CURRENT TWITTERS COUNT -->
 		<div class="jumbotron text-center">
 			<h2>Tweets : Diversidad Funcional</h2>
@@ -115,11 +125,8 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div id="tweets-per-day-chart"></div>
-                                </div>
-                                <div class="row">
                                     <div class="col-sm-10" ng-if="checkTweetsGap">
-                                        <div class="panel-heading"><label>Tweets en Rango Fechas</label>
+                                        <div class="panel-heading"><label>Tweets en Rango Fechas : {{tfTotalItems}}</label>
                                         </div>
                                         
                                         <!-- Table -->
@@ -127,15 +134,24 @@
                                             <th>Usuario</th>
                                             <th>Tweet</th>
                                             <th>Fecha</th>
-                                            <tr ng-repeat="t in tweetsingap">
+                                            <tr ng-repeat="t in filteredTweetsInGap">
                                                 <td>{{t.user.screen_name}}</td>
                                                 <td>{{t.text}}</td>
                                                 <td>{{t.created_at_dt}}</td>
-                                                <tr>
-                                            </table>
+                                            </tr>
+                                        </table>
+                                        
+                                        <div class="row">
+                                            <pagination total-items="tfTotalItems" ng-model="tfCurrentPage" max-size="tfMaxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="tfNumPages" ng-change="tfPageChanged(tfCurrentPage)" items-per-page="tfItemsPerPage" previous-text="«" next-text="»" first-text="Primero" last-text="Último"></pagination>
+                                            <pre>Página: {{tfCurrentPage}} / {{tfNumPages}}</pre>
+                                        </div>
+                                        
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <div id="tweets-per-day-chart"></div>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -197,43 +213,56 @@
                     </div>
                 </div>
                 <hr>
+                
                 <div class="row">
+            
                     <div class="col-sm-5">
-                        <div class="panel-heading"><label>Ranking Tweeteros</label>
-                        </div>
-                        
-                        <!-- Table -->
-                        <table class="table">
-                            <th>Usuario</th>
-                            <th>Núm.Tweets</th>
-                            <tr ng-repeat="t in tweetsperuser">
-                                <td>{{t._id}}</td>
-                                <td>{{t.count}}</td>
-                            <tr>
-                        </table>
-                    </div>
-                    <div class="col-sm-5">
-                            <div class="panel-heading">
-                                <form class="navbar-form navbar-left" ng-submit="getTweetsByUser()">
-                                    <div class="input-group">
-                                        <input type="text" ng-model="currentuser" placeholder="nombre de usuario" class="form-control">
-                                            <span class="input-group-btn">
-                                                <button class="btn btn-default" type="submit">Buscar Tweets</button>
-                                            </span>
-                                    </div>
-                                </form>
-                            </div>
-                            <table ng-if="currenttweets" class="table">
-                                <tr ng-repeat="t in currenttweets">
+                        <div class="panel-heading">
+                            <form class="navbar-form navbar-left" ng-submit="getTweetsByUser()">
+                                <div class="input-group" style="margin-top:-20px">
+                                    <input type="text" ng-model="currentuser" placeholder="nombre de usuario" class="form-control">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit">Buscar Tweets</button>
+                                        </span>
+                                </div>
+                            </form>
+                            <table ng-if="filteredCurrentTweets" class="table">
+                                <tr ng-repeat="t in filteredCurrentTweets">
                                     <td>{{t.text}}</td>
-                                    <tr>
+                                </tr>
                             </table>
+                            <div class="row" ng-if="filteredCurrentTweets">
+                                <pagination total-items="ctTotalItems" ng-model="ctCurrentPage" max-size="ctMaxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="ctNumPages" ng-change="ctPageChanged(ctCurrentPage)" items-per-page="ctItemsPerPage" previous-text="«" next-text="»" first-text="Primero" last-text="Último"></pagination>
+                                <pre>Página: {{ctCurrentPage}} / {{ctNumPages}}</pre>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <div class="col-sm-5">
+                        <div class="row">
+                            <div class="panel-heading">
+                            Mostrar Ranking Tweeteros
+                            <input id='rank' ng-model='checkRankingTweeteros'  ng-change='getRankingTweeteros()' type = 'checkbox' />
+                            </div>
                         </div>
 
+                        <div class="row" ng-if="checkRankingTweeteros">
+                            <table class="table">
+                                <th>Usuario</th>
+                                <th>Núm.Tweets</th>
+                                <tr ng-repeat="t in filteredTweetsPerUser">
+                                    <td>{{t._id}}</td>
+                                    <td>{{t.count}}</td>
+                                </tr>
+                            </table>
+                            <div class="row">
+                                <pagination total-items="tpuTotalItems" ng-model="tpuCurrentPage" max-size="tpuMaxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="tpuNumPages" ng-change="tpuPageChanged(tpuCurrentPage)" items-per-page="tpuItemsPerPage" previous-text="«" next-text="»" first-text="Primero" last-text="Último"></pagination>
+                                <pre>Página: {{tpuCurrentPage}} / {{tpuNumPages}}</pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        
 
 		<div class="text-center text-muted">
 			<p>A demo by <a href="http://guiem.info">guiem</a>.</p>

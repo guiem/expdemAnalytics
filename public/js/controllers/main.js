@@ -174,8 +174,13 @@ angular.module('expdemController', ['ui.bootstrap'])
         
         $scope.getTweetsByUser = function() {
             Tweets.getByUser($scope.currentuser)
-            .success(function(data) {
+            .then(function(data) {
                 $scope.currenttweets = data;
+                $scope.ctTotalItems = $scope.currenttweets.length;
+                $scope.ctCurrentPage = 1;
+                $scope.ctItemsPerPage = 6;
+                $scope.ctMaxSize = 5;
+                updateCurrentTweetsPaging();
             });
         };
                 
@@ -184,8 +189,13 @@ angular.module('expdemController', ['ui.bootstrap'])
                 return;
             }
             Tweets.getInGap($filter('date')($scope.dtStart,'yyyy-MM-dd'),$filter('date')($scope.dtEnd,'yyyy-MM-dd'))
-            .success(function(data) {
+            .then(function(data) {
                 $scope.tweetsingap = data;
+                $scope.tfTotalItems = $scope.tweetsingap.length;
+                $scope.tfCurrentPage = 1;
+                $scope.tfItemsPerPage = 6;
+                $scope.tfMaxSize = 5;
+                updateTweetsInGapPaging();
             });
         };
         
@@ -223,6 +233,57 @@ angular.module('expdemController', ['ui.bootstrap'])
             });
         };
         
-        // first default call to show tweets per day
-        //$scope.getTweetsPerDay();
+        // tweets per user paging
+        $scope.filteredTweetsPerUser = []
+                
+        $scope.tpuPageChanged = function(tpuCurrentPage) {
+            $scope.tpuCurrentPage = tpuCurrentPage;
+            updateRankingTweeterosPaging();
+        };
+                
+        $scope.getRankingTweeteros = function() {
+            $scope.tpuTotalItems = $scope.tweetsperuser.length;
+            $scope.tpuCurrentPage = 1;
+            $scope.tpuItemsPerPage = 10;
+            $scope.tpuMaxSize = 5;
+            updateRankingTweeterosPaging();
+        };
+        
+        function updateRankingTweeterosPaging(){
+            var begin = (($scope.tpuCurrentPage - 1) * $scope.tpuItemsPerPage)
+            , end = begin + $scope.tpuItemsPerPage;
+            $scope.filteredTweetsPerUser = $scope.tweetsperuser.slice(begin, end);
+        }
+        // end tweets per user paging
+                
+        // tweets in gap paging
+        $scope.filteredTweetsInGap = []
+        
+        $scope.tfPageChanged = function(tfCurrentPage) {
+            $scope.tfCurrentPage = tfCurrentPage;
+            updateTweetsInGapPaging();
+        };
+        
+        function updateTweetsInGapPaging(){
+            var begin = (($scope.tfCurrentPage - 1) * $scope.tfItemsPerPage)
+            , end = begin + $scope.tfItemsPerPage;
+            $scope.filteredTweetsInGap = $scope.tweetsingap.slice(begin, end);
+        }
+        // end tweets in gap paging
+                
+        // current tweets per user
+        $scope.filteredCurrentTweets= []
+        
+        $scope.ctPageChanged = function(ctCurrentPage) {
+            $scope.ctCurrentPage = ctCurrentPage;
+            updateCurrentTweetsPaging();
+        };
+        
+        function updateCurrentTweetsPaging(){
+            var begin = (($scope.ctCurrentPage - 1) * $scope.ctItemsPerPage)
+            , end = begin + $scope.ctItemsPerPage;
+            $scope.filteredCurrentTweets = $scope.currenttweets.slice(begin, end);
+        }
+        // end current tweets per user
+                
 });
