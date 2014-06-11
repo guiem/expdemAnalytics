@@ -41,6 +41,14 @@ angular.module('tweetService', [])
             getPerDay: function(start,end) {
                 return $http.get('/api/tweetsperday/' + start + '/' + end)
             },
+            getWithTerms: function(terms,user) {
+                var deferred = $q.defer();
+                $http({method:"GET", url:'/api/tweetsintimegap/' + terms + '/' + user})
+                .success(function(result){
+                      deferred.resolve(result);
+                });
+                return deferred.promise;
+            },
 		}
 	});
 

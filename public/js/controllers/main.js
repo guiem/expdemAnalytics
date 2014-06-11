@@ -199,6 +199,24 @@ angular.module('expdemController', ['ui.bootstrap'])
             });
         };
         
+        $scope.terms = [];
+        
+        $scope.addTerm = function() {
+            $scope.terms.push($scope.termText);
+            $scope.termText = '';
+        };
+                
+        $scope.clearTerms = function() {
+            $scope.terms = [];
+        };
+                
+        /*$scope.getWithTerms = function() {
+            Tweets.getWithTerms(terms,$scope.userTerms)
+            .then(function(data) {
+                $scope.tweetsbyterms = data;
+            });
+        };*/
+        
         function drawTweetsPerDay(){
             var dayList = [['Día','Núm.Tweets']];
             var currDate = $scope.dtStart;
