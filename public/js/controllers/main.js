@@ -184,6 +184,19 @@ angular.module('expdemController', ['ui.bootstrap'])
             });
         };
                 
+        $scope.searchTerms = function() {
+            console.log($scope.terms);
+            Tweets.tweetsByTerm($scope.userTerms,$scope.terms)
+            .then(function(data) {
+                  $scope.tweetsterms = data;
+                  //$scope.ctTotalItems = $scope.currenttweets.length;
+                  //$scope.ctCurrentPage = 1;
+                  //$scope.ctItemsPerPage = 6;
+                  //$scope.ctMaxSize = 5;
+                  //updateCurrentTweetsPaging();
+            });
+        };
+                
         $scope.getTweetsInGap = function() {
             if(!$scope.checkTweetsGap){
                 return;
@@ -209,13 +222,6 @@ angular.module('expdemController', ['ui.bootstrap'])
         $scope.clearTerms = function() {
             $scope.terms = [];
         };
-                
-        /*$scope.getWithTerms = function() {
-            Tweets.getWithTerms(terms,$scope.userTerms)
-            .then(function(data) {
-                $scope.tweetsbyterms = data;
-            });
-        };*/
         
         function drawTweetsPerDay(){
             var dayList = [['Día','Núm.Tweets']];

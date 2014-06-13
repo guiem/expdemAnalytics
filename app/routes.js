@@ -199,6 +199,12 @@ module.exports = function(app) {
             res.json(tweets);
         });
     });
+    
+    // get num tweets per day between dates
+	app.get('/api/tweetsbyterm/:user/:terms', function(req, res) {
+            console.log(req.params.user);
+            console.log(req.params.terms);
+            });
 
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {
