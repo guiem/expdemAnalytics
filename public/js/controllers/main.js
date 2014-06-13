@@ -189,6 +189,7 @@ angular.module('expdemController', ['ui.bootstrap'])
             Tweets.tweetsByTerm($scope.userTerms,$scope.terms)
             .then(function(data) {
                   $scope.tweetsterms = data;
+                  console.log($scope.tweetsterms);
                   //$scope.ctTotalItems = $scope.currenttweets.length;
                   //$scope.ctCurrentPage = 1;
                   //$scope.ctItemsPerPage = 6;

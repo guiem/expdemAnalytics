@@ -42,6 +42,9 @@ angular.module('tweetService', [])
                 return $http.get('/api/tweetsperday/' + start + '/' + end)
             },
             tweetsByTerm: function(user,terms) {
+                if (! user){
+                    user = false;
+                }
                 var deferred = $q.defer();
                 $http({method:"GET", url:'/api/tweetsbyterm/' + user + '/' + terms})
                 .success(function(result){

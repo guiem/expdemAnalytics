@@ -168,6 +168,7 @@
                                 <div class="col-sm-3">
                                     <input type="text" ng-model="userTerms" placeholder="usuario (opcional)" class="form-control">
                                 </div>
+                                
                             </div>
                             
                             <div class="row">
@@ -181,16 +182,27 @@
                                             </span>
                                     </div>
                                 </form>
+                                <div class="row">
+                                    <ul class="unstyled">
+                                        <li ng-repeat="term in terms">
+                                            <span>{{term}}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
                             </div>
                             
-                            <div class="row">
-                                <ul class="unstyled">
-                                    <li ng-repeat="term in terms">
-                                        <span>{{term}}</span>
-                                    </li>
-                                </ul>
+                            <div class="col-sm-9">
+                                <table class="table">
+                                    <th>Usuario</th>
+                                    <th>Tweet</th>
+                                    <tr ng-repeat="t in tweetsterms">
+                                        <td>{{t.user.screen_name}}</td>
+                                        <td>{{t.text}}</td>
+                                    </tr>
+                                </table>
                             </div>
-                            
+
                         </div>
                         
                     </div>

@@ -200,11 +200,36 @@ module.exports = function(app) {
         });
     });
     
-    // get num tweets per day between dates
+    // get tweets that contain certain terms
 	app.get('/api/tweetsbyterm/:user/:terms', function(req, res) {
+        var i = 0;
+        var terms_aux = req.params.terms.split(',');
+        var terms = [];
+        while (i < terms_aux.length) {
+            terms.push(eval('/'+terms_aux[i]+'/i'));
+            i += 1;
+        }
             console.log(req.params.user);
-            console.log(req.params.terms);
-            });
+        if (req.params.user !== 'false'){ // TODO: make this prettier and use false value, not string
+            console.log('entro a no false');
+        Tweet.find({"user.screen_name":req.params.user,text: { $in: terms} }, {text:1,"user.screen_name":1}, function(err, tweets) {
+                   console.log('tweets'+tweets);
+            if (err)
+                res.send(err);
+            res.json(tweets);
+        });
+        }
+            else{
+            console.log('entro a  false');
+
+            Tweet.find({text: { $in: terms} }, {text:1,"user.screen_name":1}, function(err, tweets) {
+                       console.log('tweets'+tweets);
+                       if (err)
+                       res.send(err);
+                       res.json(tweets);
+                       });
+            }
+    });
 
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {
