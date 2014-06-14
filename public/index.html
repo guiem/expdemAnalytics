@@ -160,55 +160,63 @@
                     </div>
                 </div>
                 <hr>
+                
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-12">
                         <div class="navbar-form navbar-left" role="search">
                             <div class="form-group">
                                 <label>Tweets por Contenido</label>
-                            </div>
+                            
                             <div class="row">
-                                <div class="col-sm-3">
-                                    <input type="text" ng-model="userTerms" placeholder="usuario (opcional)" class="form-control">
+                                <div class="col-sm-12">
+                                    <form class="navbar-form navbar-left" ng-submit="addTerm()">
+                                        <div class="input-group">
+                                                <span class="input-group-btn">
+                                                    <input type="text" ng-model="termText" placeholder="añade núevo concepto" class="form-control">
+                                                    <input type="text" ng-model="userTerms" placeholder="usuario (opcional)" class="form-control">
+                                                    <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
+                                                    <button type="button" class="btn btn-default" ng-click="clearTerms()"><i class="glyphicon glyphicon-remove"></i></button>
+                                                    <button type="button" class="btn btn-default" ng-click="searchTerms()">OR <i class="glyphicon glyphicon-search"></i></button>
+                                                    <button type="button" class="btn btn-default" ng-click="searchTermsAnd()">AND <i class="glyphicon glyphicon-search"></i></button>
+                                                </span>
+                                        </div>
+                                    </form>
                                 </div>
                                 
                             </div>
                             
+
                             <div class="row">
-                                <form class="navbar-form navbar-left" ng-submit="addTerm()">
-                                    <div class="input-group">
-                                        <input type="text" ng-model="termText" placeholder="añade núevo concepto" class="form-control">
-                                            <span class="input-group-btn">
-                                                <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
-                                                <button type="button" class="btn btn-default" ng-click="clearTerms()"><i class="glyphicon glyphicon-remove"></i></button>
-                                                <button type="button" class="btn btn-default" ng-click="searchTerms()">OR <i class="glyphicon glyphicon-search"></i></button>
-                                                <button type="button" class="btn btn-default" ng-click="searchTermsAnd()">AND <i class="glyphicon glyphicon-search"></i></button>
-                                            </span>
-                                    </div>
-                                </form>
-                                <div class="row">
+                                <div class="col-sm-6">
                                     <ul class="unstyled">
                                         <li ng-repeat="term in terms">
                                             <span>{{term}}</span>
                                         </li>
                                     </ul>
                                 </div>
-
                             </div>
                             
-                            <div class="col-sm-9">
-                                <loading></loading>
-                                <table class="table">
-                                    <th>Usuario</th>
-                                    <th>Tweet</th>
-                                    <tr ng-repeat="t in tweetsterms">
-                                        <td>{{t.user.screen_name}}</td>
-                                        <td>{{t.text}}</td>
-                                    </tr>
-                                </table>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <loading></loading>
+                                    <table ng-if="filteredTweetsTerms" class="table">
+                                        <th>Usuario</th>
+                                        <th>Tweet</th>
+                                        <tr ng-repeat="t in filteredTweetsTerms">
+                                            <td>{{t.user.screen_name}}</td>
+                                            <td>{{t.text}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="row" ng-if="filteredTweetsTerms">
+                                <pagination total-items="ttTotalItems" ng-model="ttCurrentPage" max-size="ttMaxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="ttNumPages" ng-change="ttPageChanged(ttCurrentPage)" items-per-page="ttItemsPerPage" previous-text="«" next-text="»" first-text="Primero" last-text="Último"></pagination>
+                                <pre>Página: {{ttCurrentPage}} / {{ttNumPages}}</pre>
                             </div>
 
+                            </div>
                         </div>
-                        
                     </div>
                 </div>
     

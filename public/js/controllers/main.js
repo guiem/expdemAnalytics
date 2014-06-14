@@ -205,12 +205,11 @@ angular.module('expdemController', ['ui.bootstrap'])
             Tweets.tweetsByTerm($scope.userTerms,$scope.terms,mode)
             .then(function(data) {
                   $scope.tweetsterms = data;
-                  console.log($scope.tweetsterms);
-                  //$scope.ctTotalItems = $scope.currenttweets.length;
-                  //$scope.ctCurrentPage = 1;
-                  //$scope.ctItemsPerPage = 6;
-                  //$scope.ctMaxSize = 5;
-                  //updateCurrentTweetsPaging();
+                  $scope.ttTotalItems = $scope.tweetsterms.length;
+                  $scope.ttCurrentPage = 1;
+                  $scope.ttItemsPerPage = 6;
+                  $scope.ttMaxSize = 5;
+                  updateTweetsTermsPaging();
                   $scope.loading = false;
             });
         };
@@ -331,5 +330,20 @@ angular.module('expdemController', ['ui.bootstrap'])
             $scope.filteredCurrentTweets = $scope.currenttweets.slice(begin, end);
         }
         // end current tweets per user
+                
+                // current tweets term
+                $scope.filteredTweetsTerms= []
+                
+                $scope.ttPageChanged = function(ttCurrentPage) {
+                $scope.ttCurrentPage = ttCurrentPage;
+                updateTweetsTermsPaging();
+                };
+                
+                function updateTweetsTermsPaging(){
+                var begin = (($scope.ttCurrentPage - 1) * $scope.ttItemsPerPage)
+                , end = begin + $scope.ttItemsPerPage;
+                $scope.filteredTweetsTerms = $scope.tweetsterms.slice(begin, end);
+                }
+                // end current tweets per terms
                 
 });
