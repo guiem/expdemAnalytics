@@ -38,6 +38,8 @@
     <script src="js/ui-bootstrap-tpls-0.11.0.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="js/charts/wordcloud2.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
     
     <!--<script data-require="angular-ui-bootstrap@0.3.0" data-semver="0.3.0" src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.3.0.min.js"></script>-->
 
@@ -178,7 +180,8 @@
                                             <span class="input-group-btn">
                                                 <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
                                                 <button type="button" class="btn btn-default" ng-click="clearTerms()"><i class="glyphicon glyphicon-remove"></i></button>
-                                                <button type="button" class="btn btn-default" ng-click="searchTerms()"><i class="glyphicon glyphicon-search"></i></button>
+                                                <button type="button" class="btn btn-default" ng-click="searchTerms()">OR <i class="glyphicon glyphicon-search"></i></button>
+                                                <button type="button" class="btn btn-default" ng-click="searchTermsAnd()">AND <i class="glyphicon glyphicon-search"></i></button>
                                             </span>
                                     </div>
                                 </form>
@@ -193,6 +196,7 @@
                             </div>
                             
                             <div class="col-sm-9">
+                                <loading></loading>
                                 <table class="table">
                                     <th>Usuario</th>
                                     <th>Tweet</th>

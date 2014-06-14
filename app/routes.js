@@ -201,35 +201,35 @@ module.exports = function(app) {
     });
     
     // get tweets that contain certain terms
-	app.get('/api/tweetsbyterm/:user/:terms', function(req, res) {
+	app.get('/api/tweetsbyterm/:user/:terms/:mode', function(req, res) {
         var i = 0;
         var terms_aux = req.params.terms.split(',');
         var terms = [];
+        var query = {};
         while (i < terms_aux.length) {
-            terms.push(eval('/'+terms_aux[i]+'/i'));
+            if (req.params.mode !== 'and')
+                terms.push(eval('/'+terms_aux[i]+'/i'));
+            else
+                terms.push({text: { $in: [eval('/'+terms_aux[i]+'/i')]}});
             i += 1;
         }
-            console.log(req.params.user);
-        if (req.params.user !== 'false'){ // TODO: make this prettier and use false value, not string
-            console.log('entro a no false');
-        Tweet.find({"user.screen_name":req.params.user,text: { $in: terms} }, {text:1,"user.screen_name":1}, function(err, tweets) {
-                   console.log('tweets'+tweets);
+        if (req.params.mode !== 'and')
+            query = {text: { $in: terms}};
+        else {
+            query = {$and: terms}
+        }
+        if (req.params.user !== 'false')// TODO: make this prettier and use false value, not string
+            query['user.screen_name'] = req.params.user;
+        console.log(query);
+        Tweet.find(query, {text:1,"user.screen_name":1}, function(err, tweets) {
             if (err)
                 res.send(err);
             res.json(tweets);
         });
-        }
-            else{
-            console.log('entro a  false');
-
-            Tweet.find({text: { $in: terms} }, {text:1,"user.screen_name":1}, function(err, tweets) {
-                       console.log('tweets'+tweets);
-                       if (err)
-                       res.send(err);
-                       res.json(tweets);
-                       });
-            }
     });
+    
+    // and expression
+    //db.tweets_df.find( {$and:[{text: { $in: [/rt/i] }},{text: { $in: [/glossari/i]}}] }, {text:1,"user.screen_name":1} )
 
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {

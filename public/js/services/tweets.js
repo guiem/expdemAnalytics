@@ -41,12 +41,13 @@ angular.module('tweetService', [])
             getPerDay: function(start,end) {
                 return $http.get('/api/tweetsperday/' + start + '/' + end)
             },
-            tweetsByTerm: function(user,terms) {
-                if (! user){
+            tweetsByTerm: function(user,terms,mode) {
+                if (! user)
                     user = false;
-                }
+                if (mode !== 'and')
+                    mode = 'or';
                 var deferred = $q.defer();
-                $http({method:"GET", url:'/api/tweetsbyterm/' + user + '/' + terms})
+                $http({method:"GET", url:'/api/tweetsbyterm/' + user + '/' + terms + '/' + mode})
                 .success(function(result){
                       deferred.resolve(result);
                 });

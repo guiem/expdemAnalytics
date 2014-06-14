@@ -1,5 +1,21 @@
 angular.module('expdemController', ['ui.bootstrap'])
 
+    .directive('loading', function () {
+        return {
+           restrict: 'E',
+           replace:true,
+           template: '<div style="float:left" class="col-md-offset-4 loading"><h2><img src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" width="20" height="20" /><text style="font-size:12px;"> loading...</text></h2></div>',
+           link: function (scope, element, attr) {
+               scope.$watch('loading', function (val) {
+                    if (val)
+                        $(element).show();
+                    else
+                        $(element).hide();
+                });
+           }
+        }
+    })
+
 	.controller('mainController', function($scope, $filter, $http, Users, Tweets, Words, HashTags) {
                 
         Tweets.getMinDate()
@@ -184,9 +200,9 @@ angular.module('expdemController', ['ui.bootstrap'])
             });
         };
                 
-        $scope.searchTerms = function() {
-            console.log($scope.terms);
-            Tweets.tweetsByTerm($scope.userTerms,$scope.terms)
+        $scope.searchTerms = function(mode) {
+            $scope.loading = true;
+            Tweets.tweetsByTerm($scope.userTerms,$scope.terms,mode)
             .then(function(data) {
                   $scope.tweetsterms = data;
                   console.log($scope.tweetsterms);
@@ -195,8 +211,13 @@ angular.module('expdemController', ['ui.bootstrap'])
                   //$scope.ctItemsPerPage = 6;
                   //$scope.ctMaxSize = 5;
                   //updateCurrentTweetsPaging();
+                  $scope.loading = false;
             });
         };
+        
+        $scope.searchTermsAnd = function() {
+            $scope.searchTerms('and');
+        }
                 
         $scope.getTweetsInGap = function() {
             if(!$scope.checkTweetsGap){
