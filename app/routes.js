@@ -128,8 +128,11 @@ module.exports = function(app) {
     });
     
     // get count words
-	app.get('/api/ngrams', function(req, res) {
-            var blackList = [":","@","#","http","el","la",",","de","en","y","los","''","a","``",".","sobre","por","...","con","para","rt","las","!","no","que","una","un","l","|","san","s","tel","es","se","al","su","-","scoopit","?","del","d","amb","i","te","lo","e","24","per","https",")","(","o","diversidad","funcional","diversidadfuncional","funcional."];
+	app.get('/api/ngrams/:terms', function(req, res) {
+            var blackList = req.params.terms.split(',');
+            blackList.push("#");
+            blackList.push("?");
+            blackList.push(",");
             // db.words.find({word:{$nin:blackList}}).sort( { count: -1 } )
             Word
             .find({word:{$nin:blackList}})
@@ -202,6 +205,7 @@ module.exports = function(app) {
     
     // get tweets that contain certain terms
 	app.get('/api/tweetsbyterm/:user/:terms/:mode', function(req, res) {
+            console.log(req.params.terms);
         var i = 0;
         var terms_aux = req.params.terms.split(',');
         var terms = [];
