@@ -204,7 +204,7 @@
                                         <th>Tweet</th>
                                         <tr ng-repeat="t in filteredTweetsTerms">
                                             <td>{{t.user.screen_name}}</td>
-                                            <td>{{t.text}}</td>
+                                            <td><div ng-bind-html="formatText(t.text)"></td>
                                         </tr>
                                     </table>
                                 </div>

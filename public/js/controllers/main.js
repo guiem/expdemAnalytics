@@ -16,7 +16,7 @@ angular.module('expdemController', ['ui.bootstrap'])
         }
     })
 
-	.controller('mainController', function($scope, $filter, $http, Users, Tweets, Words, HashTags) {
+	.controller('mainController', function($scope, $filter, $http,$sce, Users, Tweets, Words, HashTags) {
                 
         Tweets.getMinDate()
         .success(function(data) {
@@ -345,5 +345,16 @@ angular.module('expdemController', ['ui.bootstrap'])
                 $scope.filteredTweetsTerms = $scope.tweetsterms.slice(begin, end);
                 }
                 // end current tweets per terms
+                
+        $scope.formatText = function(text) {
+            var aux_text = text;
+            angular.forEach($scope.terms, function(term) {
+                console.log(term);
+                var query = '/'+term+'/gi';
+                console.log(query);
+                aux_text = aux_text.replace(eval(query), '<strong style="color:#428bca">'+term+'</strong>');
+            });
+            return $sce.trustAsHtml(aux_text);
+        };
                 
 });
