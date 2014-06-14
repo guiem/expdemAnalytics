@@ -243,7 +243,7 @@
                                 <input id="max-words" type="text" class="form-control" ng-model="maxWords"  size="1" placeholder="50">
                             </div>
                                     <input ng-model='showBlackList' type = 'checkbox'> Filtro</input>
-                                    <textarea ng-if="showBlackList" class="form-control" ng-model="blackList"> </textarea>
+                                    <textarea ng-show="showBlackList" class="form-control" ng-model="blackList"> </textarea>
                                     <button ng-if="showBlackList" class="btn btn-default" ng-click="getNGramsUpdate()"><span class="glyphicon glyphicon-refresh"></button>
                         </div>
                     </div>
