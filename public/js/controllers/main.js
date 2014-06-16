@@ -69,7 +69,7 @@ angular.module('expdemController', ['ui.bootstrap'])
                 $scope.tweetsperuser = data;
             });
         
-        $scope.blackList = [":","@","http","el","la","de","en","y","los","''","a","``",".","sobre","por","...","con","para","rt","las","!","no","que","una","un","l","|","san","s","tel","es","se","al","su","-","scoopit","del","d","amb","i","te","lo","e","24","per","https",")","(","o","diversidad","funcional","diversidadfuncional","funcional."];
+        $scope.blackList = [":","@","http","el","la","de","en","y","los","''","a","``",".","sobre","por","con","para","rt","las","!","no","que","una","un","l","|","san","s","tel","es","se","al","su","-","scoopit","del","d","amb","i","te","lo","e","24","per","https",")","(","o","diversidad","funcional","diversidadfuncional","funcional."];
         Words.getNGrams($scope.blackList)
         .then(function(data) {
             $scope.ngrams = data;

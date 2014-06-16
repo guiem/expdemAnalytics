@@ -133,6 +133,8 @@ module.exports = function(app) {
             blackList.push("#");
             blackList.push("?");
             blackList.push(",");
+            blackList.push("%");
+            blackList.push("...");
             // db.words.find({word:{$nin:blackList}}).sort( { count: -1 } )
             Word
             .find({word:{$nin:blackList}})
@@ -176,7 +178,8 @@ module.exports = function(app) {
         var dateEndAux = req.params.end_date.split("-");
         var dateEnd = new Date(dateEndAux[0],(parseInt(dateEndAux[1])-1).toString(),dateEndAux[2],'23','59','59');
         Tweet.find({"created_at_dt" :{$gte : dateStart, $lte : dateEnd } })
-        .select('created_at_dt text user.screen_name')
+        .select('user.screen_name text created_at_dt')
+        .sort('-created_at_dt')
         .exec(function(err, tweets) {
             if (err)
                 res.send(err);
@@ -224,8 +227,10 @@ module.exports = function(app) {
         }
         if (req.params.user !== 'false')// TODO: make this prettier and use false value, not string
             query['user.screen_name'] = req.params.user;
-        console.log(query);
-        Tweet.find(query, {text:1,"user.screen_name":1}, function(err, tweets) {
+        Tweet.find(query)
+        .select('user.screen_name text created_at_dt')
+        .sort('-created_at_dt')
+        .exec(function(err,tweets){
             if (err)
                 res.send(err);
             res.json(tweets);

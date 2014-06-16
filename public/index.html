@@ -139,7 +139,7 @@
                                             <tr ng-repeat="t in filteredTweetsInGap">
                                                 <td>{{t.user.screen_name}}</td>
                                                 <td>{{t.text}}</td>
-                                                <td>{{t.created_at_dt}}</td>
+                                                <td>{{t.created_at_dt | date:'dd/MM/yy HH:mm:ss'}}</td>
                                             </tr>
                                         </table>
                                         
@@ -202,9 +202,11 @@
                                     <table ng-if="filteredTweetsTerms" class="table">
                                         <th>Usuario</th>
                                         <th>Tweet</th>
+                                        <th>Fecha</th>
                                         <tr ng-repeat="t in filteredTweetsTerms">
                                             <td>{{t.user.screen_name}}</td>
                                             <td><div ng-bind-html="formatText(t.text)"></td>
+                                            <td>{{t.created_at_dt | date:'dd/MM/yy HH:mm:ss'}}</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -212,7 +214,7 @@
                             
                             <div class="row" ng-if="filteredTweetsTerms">
                                 <pagination total-items="ttTotalItems" ng-model="ttCurrentPage" max-size="ttMaxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="ttNumPages" ng-change="ttPageChanged(ttCurrentPage)" items-per-page="ttItemsPerPage" previous-text="«" next-text="»" first-text="Primero" last-text="Último"></pagination>
-                                <pre>Página: {{ttCurrentPage}} / {{ttNumPages}}</pre>
+                                <pre>Página: {{ttCurrentPage}} / {{ttNumPages}}. Total recuperados: {{tweetsterms.length}}</pre>
                             </div>
 
                             </div>
